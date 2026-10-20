@@ -41,3 +41,10 @@ A duty that ends at exactly the limit duration is **non-compliant** — the limi
 - `DutyPeriod(start, end, flight_time, augmented=False, sectors=1)` — immutable, validates in `__post_init__`.
 - `calculate_duty(dp) -> DutyResult(max_duty, actual_duty, remaining, compliant, limiting_factor)` — checks flight time and duty duration against the sector/augmentation tables.
 - `calculate_rest(dp, provided_rest) -> RestResult(required_rest, provided_rest, compliant)` — checks the rest scheduled after this duty meets the minimum.
+
+## Performance
+
+The window keeps a bounded buffer, so `push` is constant time and memory does not
+grow with the length of the stream. `peak` and `trough` are linear in the window
+size, which is the trade that keeps `push` cheap.
+
